@@ -1,6 +1,6 @@
 #!/bin/node
 
-require('dotenv').config()
+require('dotenv').config({ path: `${__dirname}/.env` })
 const os = require('os')
 const du = require('diskusage')
 const Influx = require('influx')
