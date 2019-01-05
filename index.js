@@ -29,18 +29,29 @@ const hostMetrics = () => ({
   'disk_free': du.checkSync('/').free,
 })
 
-let { uptime, ...info } = hostInfo()
-let { ...metrics } = hostMetrics()
-
-datapoint = {
-  tags: { ...info },
-  fields: { ...metrics, uptime }
+const writeData = (points) => {
+  influx.writeMeasurement('metric', points)
+  .then(() => console.log(`${points.length} points added`))
+  .catch(error => {
+    console.error(`There was an error adding a data points set. ${points.length} points lost.`)
+    console.error(error.stack)
+  })
 }
 
-influx.writeMeasurement('metric', [datapoint])
-  .then(() => console.log('Datapoint added'))
-  .catch(error => {
-    console.error('There was an error adding the data point.')
-    console.error(error.stack)
-    process.exit()
-  })
+let datapoints = []
+setInterval(() => {
+  let { uptime, ...info } = hostInfo()
+  let { ...metrics } = hostMetrics()
+  
+  datapoint = {
+    tags: { ...info },
+    fields: { ...metrics, uptime },
+    timestamp: new Date()
+  }
+  datapoints.push(datapoint)
+
+  if (datapoints.length >= 60) {
+    writeData(datapoints.slice())
+    datapoints = []
+  }
+}, 1000)
