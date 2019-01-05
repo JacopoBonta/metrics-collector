@@ -1,0 +1,17 @@
+{
+  "name": "metrics-collector",
+  "version": "1.0.0",
+  "description": "Collect metrics about a system and save them in an Influx database instance",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "diskusage": "^1.0.0",
+    "dotenv": "^6.2.0",
+    "influx": "^5.0.7"
+  }
+}
